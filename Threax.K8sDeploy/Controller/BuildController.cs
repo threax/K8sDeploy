@@ -27,7 +27,7 @@ namespace Threax.K8sDeploy.Controller
         public Task Run()
         {
             var clonePath = appConfig.GetSourcePath();
-            var dockerFile = Path.GetFullPath(Path.Combine(clonePath, appConfig.Dockerfile));
+            var dockerFile = Path.GetFullPath(Path.Combine(clonePath, appConfig.Dockerfile ?? throw new InvalidOperationException($"Please provide {nameof(appConfig.Dockerfile)} when using build.")));
             var image = appConfig.Name;
             var tag = $"{image}:{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}";
             var currentTag = appConfig.CurrentTag ?? throw new InvalidOperationException($"Please provide {nameof(appConfig.CurrentTag)} when using build.");
