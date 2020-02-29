@@ -32,13 +32,14 @@ namespace Threax.K8sDeploy.Controller
             var tag = $"{image}:{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}";
             var currentTag = appConfig.CurrentTag ?? throw new InvalidOperationException($"Please provide {nameof(appConfig.CurrentTag)} when using build.");
 
-            var additionalArgs = "";
+            var args = $"build {clonePath} -f {dockerFile} -t {tag} -t {image}:{currentTag}";
+
             if (appConfig.AlwaysPull)
             {
-                additionalArgs += "--pull";
+                args += " --pull";
             }
 
-            processRunner.RunProcessWithOutput(new ProcessStartInfo("docker", $"build {clonePath} -f {dockerFile} -t {tag} -t {image}:{currentTag} {additionalArgs}"));
+            processRunner.RunProcessWithOutput(new ProcessStartInfo("docker", args));
 
             return Task.CompletedTask;
         }
