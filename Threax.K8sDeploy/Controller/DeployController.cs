@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -76,6 +77,17 @@ namespace Threax.K8sDeploy.Controller
                 { "group", appConfig.Group },
                 { "initCommand", appConfig.InitCommand }
             };
+
+            if (!File.Exists(deploymentFile))
+            {
+                var builtInFile = Path.Combine(Assembly.GetEntryAssembly().Location, deploymentFile);
+
+                if (!File.Exists(builtInFile))
+                {
+                    throw new FileNotFoundException($"Cannot find {deploymentFile} searched '{Path.GetFullPath(deploymentFile)}' and '{builtInFile}'");
+                }
+            }
+
             var inputYaml = File.ReadAllText(deploymentFile);
             var outputYaml = tokenReplacer.ReplaceTokens(inputYaml, parameters);
             var outputPath = Path.Combine(Path.GetDirectoryName(deploymentFile), $"Out-{Guid.NewGuid()}.yaml");
