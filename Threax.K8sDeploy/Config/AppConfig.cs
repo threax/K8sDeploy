@@ -27,6 +27,8 @@ namespace Threax.K8sDeploy.Config
 
         public String DeploymentFile { get; set; } = "AppDeployment.yaml";
 
+        public String InitCommand { get; set; }
+
         /// <summary>
         /// Validate that this config is correct. Throws an exception if there is an error.
         /// </summary>

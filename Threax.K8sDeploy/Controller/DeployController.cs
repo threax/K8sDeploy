@@ -72,7 +72,8 @@ namespace Threax.K8sDeploy.Controller
                 { "image", latestDateTag },
                 { "appdataPath", appdataPath },
                 { "user", appConfig.User },
-                { "group", appConfig.Group }
+                { "group", appConfig.Group },
+                { "initCommand", appConfig.InitCommand }
             };
             var inputYaml = File.ReadAllText(deploymentFile);
             var outputYaml = tokenReplacer.ReplaceTokens(inputYaml, parameters);

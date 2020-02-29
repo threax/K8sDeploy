@@ -35,6 +35,30 @@ spec:
         runAsGroup: {{group}}
         # fsGroup: 15000 # Maybe don't need this
         runAsNonRoot: true
+      initContainers:
+      - name: app-init
+        image: {{image}}
+        command: ['sh', '-c', '{{initCommand}}']
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://*:5000
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - mountPath: /appdata
+          name: appdata-volume
+      volumes:
+      - name: appdata-volume
+        hostPath:
+          path: {{appdataPath}}
+          type: Directory
+      securityContext:
+        # allowPrivilegeEscalation: false # Doesn't seem to work
+        runAsUser: {{user}}
+        runAsGroup: {{group}}
+        # fsGroup: 15000 # Maybe don't need this
+        runAsNonRoot: true
 
 ---
 
