@@ -15,7 +15,7 @@ namespace Threax.K8sDeploy.Config
 
         public String Dockerfile { get; set; }
 
-        public String CurrentTag { get; set; } = "k8sdeploy-current";
+        public String BaseTag { get; set; } = "k8sdeploy";
 
         public bool AlwaysPull { get; set; } = true;
 
@@ -26,7 +26,12 @@ namespace Threax.K8sDeploy.Config
         {
             if(Name == null)
             {
-                throw new InvalidOperationException("K8sDeploy.Name cannot be null. Please provide a value.");
+                throw new InvalidOperationException($"{nameof(Name)} cannot be null. Please provide a value.");
+            }
+
+            if(BaseTag == null)
+            {
+                throw new InvalidOperationException($"{nameof(BaseTag)} cannot be null. Please provide a value.");
             }
         }
 
@@ -37,6 +42,16 @@ namespace Threax.K8sDeploy.Config
         public String GetSourcePath()
         {
             return Path.GetFullPath(Path.Combine(SrcBasePath, Name));
+        }
+
+        public String GetBuildTag()
+        {
+            return $"{BaseTag}-{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}";
+        }
+
+        public String GetCurrentTag()
+        {
+            return $"{BaseTag}-current";
         }
     }
 }

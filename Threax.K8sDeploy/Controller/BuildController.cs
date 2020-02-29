@@ -29,10 +29,10 @@ namespace Threax.K8sDeploy.Controller
             var clonePath = appConfig.GetSourcePath();
             var dockerFile = Path.GetFullPath(Path.Combine(clonePath, appConfig.Dockerfile ?? throw new InvalidOperationException($"Please provide {nameof(appConfig.Dockerfile)} when using build.")));
             var image = appConfig.Name;
-            var tag = $"{image}:{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}";
-            var currentTag = appConfig.CurrentTag ?? throw new InvalidOperationException($"Please provide {nameof(appConfig.CurrentTag)} when using build.");
+            var buildTag = appConfig.GetBuildTag();
+            var currentTag = appConfig.GetCurrentTag();
 
-            var args = $"build {clonePath} -f {dockerFile} -t {tag} -t {image}:{currentTag}";
+            var args = $"build {clonePath} -f {dockerFile} -t {image}:{buildTag} -t {image}:{currentTag}";
 
             if (appConfig.AlwaysPull)
             {

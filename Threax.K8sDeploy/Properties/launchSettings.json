@@ -10,6 +10,10 @@
     "Build": {
       "commandName": "Project",
       "commandLineArgs": "build"
+    },
+    "Deploy": {
+      "commandName": "Project",
+      "commandLineArgs": "deploy"
     }
   }
 }
