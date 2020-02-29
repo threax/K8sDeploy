@@ -9,6 +9,8 @@ namespace Threax.K8sDeploy.Config
     {
         public String Name { get; set; }
 
+        public String Domain { get; set; } = "dev.threax.com";
+
         public String RepoUrl { get; set; }
 
         public String User { get; set; } = "10000";

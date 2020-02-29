@@ -81,7 +81,7 @@ metadata:
   name: {{name}}
 spec:
   rules:
-  - host: localhost
+  - host: {{host}}
     http:
       paths:
       - backend:

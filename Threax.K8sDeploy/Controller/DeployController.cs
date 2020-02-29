@@ -69,6 +69,7 @@ namespace Threax.K8sDeploy.Controller
             var parameters = new Dictionary<String, Object>()
             {
                 { "name", appConfig.Name },
+                { "host", $"{appConfig.Name}.{appConfig.Domain}" },
                 { "image", latestDateTag },
                 { "appdataPath", appdataPath },
                 { "user", appConfig.User },
