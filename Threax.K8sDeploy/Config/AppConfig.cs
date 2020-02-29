@@ -13,6 +13,12 @@ namespace Threax.K8sDeploy.Config
 
         public String SrcBasePath { get; set; } = "src";
 
+        public String Dockerfile { get; set; }
+
+        public String CurrentTag { get; set; } = "k8sdeploy-current";
+
+        public bool AlwaysPull { get; set; } = true;
+
         /// <summary>
         /// Validate that this config is correct. Throws an exception if there is an error.
         /// </summary>

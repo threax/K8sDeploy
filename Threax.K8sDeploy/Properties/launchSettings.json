@@ -6,6 +6,10 @@
     "Clone": {
       "commandName": "Project",
       "commandLineArgs": "clone"
+    },
+    "Build": {
+      "commandName": "Project",
+      "commandLineArgs": "build"
     }
   }
 }

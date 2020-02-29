@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Threax.Extensions.Configuration.SchemaBinder;
 using Threax.K8sDeploy.Config;
 using Threax.K8sDeploy.Controller;
+using Threax.K8sDeploy.Services;
 
 namespace Threax.K8sDeploy
 {
@@ -22,6 +23,8 @@ namespace Threax.K8sDeploy
                     services.AddHostedService<HostedService>();
 
                     services.AddScoped<SchemaConfigurationBinder>(s => new SchemaConfigurationBinder(s.GetRequiredService<IConfiguration>()));
+
+                    services.AddScoped<IProcessRunner, ProcessRunner>();
 
                     services.AddScoped<AppConfig>(s =>
                     {
