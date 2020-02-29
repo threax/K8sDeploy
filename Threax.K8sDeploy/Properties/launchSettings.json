@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Threax.K8sDeploy": {
+      "commandName": "Project"
+    },
+    "Clone": {
+      "commandName": "Project",
+      "commandLineArgs": "clone"
+    }
+  }
+}
