@@ -11,13 +11,21 @@ namespace Threax.K8sDeploy.Config
 
         public String RepoUrl { get; set; }
 
+        public String User { get; set; } = "10000";
+
+        public String Group { get; set; } = "10000";
+
         public String SrcBasePath { get; set; } = "src";
+
+        public String AppDataBasePath { get; set; } = "data";
 
         public String Dockerfile { get; set; }
 
         public String BaseTag { get; set; } = "k8sdeploy";
 
         public bool AlwaysPull { get; set; } = true;
+
+        public String DeploymentFile { get; set; } = "AppDeployment.yaml";
 
         /// <summary>
         /// Validate that this config is correct. Throws an exception if there is an error.
@@ -42,6 +50,15 @@ namespace Threax.K8sDeploy.Config
         public String GetSourcePath()
         {
             return Path.GetFullPath(Path.Combine(SrcBasePath, Name));
+        }
+
+        /// <summary>
+        /// Build the path to clone code into.
+        /// </summary>
+        /// <returns></returns>
+        public String GetAppDataPath()
+        {
+            return Path.GetFullPath(Path.Combine(AppDataBasePath, Name));
         }
 
         public String GetBuildTag()
