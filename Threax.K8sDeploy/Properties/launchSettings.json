@@ -13,7 +13,8 @@
     },
     "Deploy": {
       "commandName": "Project",
-      "commandLineArgs": "deploy"
+      "commandLineArgs": "deploy",
+      "workingDirectory": "$(ProjectDir)"
     }
   }
 }

@@ -13,9 +13,9 @@ namespace Threax.K8sDeploy.Config
 
         public String RepoUrl { get; set; }
 
-        public String User { get; set; } = "10000";
+        public long? User { get; set; } = 10000;
 
-        public String Group { get; set; } = "10000";
+        public long? Group { get; set; } = 10000;
 
         public String SrcBasePath { get; set; } = "src";
 
