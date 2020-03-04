@@ -20,6 +20,8 @@ namespace k8s.Models
 
     public class V1BetaIngressSpec
     {
+        public List<V1BetaIngressTls> tls { get; set; }
+
         public List<V1BetaIngressRule> rules { get; set; }
     }
 
@@ -44,4 +46,11 @@ namespace k8s.Models
         public string serviceName { get; set; }
         public int servicePort { get; set; }
     }
+
+    public class V1BetaIngressTls
+    {
+        public List<string> hosts { get; set; }
+        public string secretName { get; set; }
+    }
+
 }

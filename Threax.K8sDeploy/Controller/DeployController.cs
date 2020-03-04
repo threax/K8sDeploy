@@ -137,6 +137,12 @@ namespace Threax.K8sDeploy.Controller
                     name = name,
                 },
                 spec = new V1BetaIngressSpec() {
+                    tls = new List<V1BetaIngressTls>() {
+                        new V1BetaIngressTls() {
+                            hosts = new List<string>(){ host },
+                            secretName = $"{appConfig.Domain}-tls"
+                        }
+                    },
                     rules = new List<V1BetaIngressRule>() {
                         new V1BetaIngressRule() {
                             host = host,
