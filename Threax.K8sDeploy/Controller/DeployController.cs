@@ -1,14 +1,11 @@
-﻿using k8s.Models;
-using LibGit2Sharp;
+﻿using k8s;
+using k8s.Models;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Threax.K8sDeploy.Config;
@@ -18,17 +15,21 @@ namespace Threax.K8sDeploy.Controller
 {
     class DeployController : IController
     {
+        private const String Namespace = "default";
+
         private AppConfig appConfig;
         private ILogger logger;
         private IProcessRunner processRunner;
         private ITokenReplacer tokenReplacer;
+        private readonly IKubernetes k8SClient;
 
-        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, ITokenReplacer tokenReplacer)
+        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, ITokenReplacer tokenReplacer, IKubernetes k8sClient)
         {
             this.appConfig = appConfig;
             this.logger = logger;
             this.processRunner = processRunner;
             this.tokenReplacer = tokenReplacer;
+            k8SClient = k8sClient;
         }
 
         public Task Run()
@@ -68,90 +69,44 @@ namespace Threax.K8sDeploy.Controller
             //Hack up windows path
             appdataPath = "/" + appdataPath.Replace("\\", "/").Remove(1, 1);
 
-            //Create deployment yaml from source file
-            var parameters = new Dictionary<String, Object>()
-            {
-                { "name", appConfig.Name },
-                { "host", $"{appConfig.Name}.{appConfig.Domain}" },
-                { "image", latestDateTag },
-                { "appdataPath", appdataPath },
-                { "user", appConfig.User },
-                { "group", appConfig.Group },
-                { "initCommand", appConfig.InitCommand }
-            };
+            var deployment = CreateDeployment(appConfig.Name, latestDateTag, appdataPath, appConfig.User, appConfig.Group);
+            var service = CreateService(appConfig.Name);
+            var ingress = CreateIngress(appConfig.Name, $"{appConfig.Name}.{appConfig.Domain}");
 
-            //if (!File.Exists(deploymentFile))
-            //{
-            //    var builtInFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), deploymentFile);
-
-            //    if (!File.Exists(builtInFile))
-            //    {
-            //        throw new FileNotFoundException($"Cannot find {deploymentFile} searched '{Path.GetFullPath(deploymentFile)}' and '{builtInFile}'");
-            //    }
-            //}
-
-            //var inputYaml = File.ReadAllText(deploymentFile);
-            //var outputYaml = tokenReplacer.ReplaceTokens(inputYaml, parameters);
-            //File.WriteAllText(outputPath, outputYaml);
-
-            var outputPath = Path.GetDirectoryName(deploymentFile);
-            ApplyObjects(outputPath, new List<Object>()
-            {
-                CreateDeployment(appConfig.Name, latestDateTag, appdataPath, appConfig.User, appConfig.Group),
-                CreateService(appConfig.Name),
-                CreateIngress(appConfig.Name, $"{appConfig.Name}.{appConfig.Domain}")
-            });
+            k8SClient.CreateOrReplaceNamespacedDeployment(deployment, Namespace);
+            k8SClient.CreateOrReplaceNamespacedService(service, Namespace);
+            k8SClient.CreateOrReplaceNamespacedIngress1(ingress, Namespace);
 
             return Task.CompletedTask;
         }
 
-        private void ApplyObjects(String outputPath, IEnumerable<Object> data)
+        private Networkingv1beta1Ingress CreateIngress(String name, String host)
         {
-            var serializer = Newtonsoft.Json.JsonSerializer.Create(new Newtonsoft.Json.JsonSerializerSettings()
+            return new Networkingv1beta1Ingress()
             {
-                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
-            });
-
-            foreach (var item in data)
-            {
-                var outputFile = Path.Combine(outputPath, $"apply-{Guid.NewGuid()}.json");
-                using (var writer = new StreamWriter(File.Open(outputFile, FileMode.Create, FileAccess.ReadWrite, FileShare.None)))
+                ApiVersion = "networking.k8s.io/v1beta1",
+                Kind = "Ingress",
+                Metadata = new V1ObjectMeta
                 {
-                    serializer.Serialize(writer, item, item.GetType());
-                    writer.Flush();
-                }
-
-                processRunner.RunProcessWithOutput(new ProcessStartInfo("kubectl", $"apply -f \"{outputFile}\""));
-
-                File.Delete(outputFile);
-            }
-        }
-
-        private V1BetaIngress CreateIngress(String name, String host)
-        {
-            return new V1BetaIngress()
-            {
-                apiVersion = "networking.k8s.io/v1beta1",
-                kind = "Ingress",
-                metadata = new V1BetaIngressMetadata() {
-                    name = name,
+                    Name = name,
                 },
-                spec = new V1BetaIngressSpec() {
-                    tls = new List<V1BetaIngressTls>() {
-                        new V1BetaIngressTls() {
-                            hosts = new List<string>(){ host },
-                            secretName = $"{appConfig.Domain}-tls"
+                Spec = new Networkingv1beta1IngressSpec()
+                {
+                    Tls = new List<Networkingv1beta1IngressTLS>() {
+                        new Networkingv1beta1IngressTLS() {
+                            Hosts = new List<string>(){ host },
+                            SecretName = $"{appConfig.Domain}-tls"
                         }
                     },
-                    rules = new List<V1BetaIngressRule>() {
-                        new V1BetaIngressRule() {
-                            host = host,
-                            http = new V1BetaIngressHttp() {
-                                paths = new List<V1BetaIngressPath>() {
-                                    new V1BetaIngressPath() {
-                                        backend = new V1BetaIngressBackend() {
-                                            serviceName = name,
-                                            servicePort = 80
+                    Rules = new List<Networkingv1beta1IngressRule>() {
+                        new Networkingv1beta1IngressRule() {
+                            Host = host,
+                            Http = new Networkingv1beta1HTTPIngressRuleValue() {
+                                Paths = new List<Networkingv1beta1HTTPIngressPath>() {
+                                    new Networkingv1beta1HTTPIngressPath() {
+                                        Backend = new Networkingv1beta1IngressBackend() {
+                                            ServiceName = name,
+                                            ServicePort = 80
                                         }
                                     }
                                 }
@@ -239,6 +194,7 @@ namespace Threax.K8sDeploy.Controller
                                     }
                                 }
                             },
+                            //Make InitContainers optional
                             InitContainers = new List<V1Container>() {
                                 new V1Container() {
                                     Name = "app-init",

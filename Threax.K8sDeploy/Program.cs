@@ -1,4 +1,5 @@
 ﻿using System;
+using k8s;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +27,13 @@ namespace Threax.K8sDeploy
 
                     services.AddScoped<IProcessRunner, ProcessRunner>();
                     services.AddScoped<ITokenReplacer, TokenReplacer>();
+
+                    services.AddScoped<IKubernetes>(s =>
+                    {
+                        var config = KubernetesClientConfiguration.BuildDefaultConfig();
+                        IKubernetes client = new Kubernetes(config);
+                        return client;
+                    });
 
                     services.AddScoped<AppConfig>(s =>
                     {
