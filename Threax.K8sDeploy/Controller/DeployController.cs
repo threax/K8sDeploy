@@ -64,9 +64,9 @@ namespace Threax.K8sDeploy.Controller
             if (appConfig.Volumes != null)
             {
                 //Ensure app data path exists (will need to handle permissions here too eventually).
-                foreach (var vol in appConfig.Volumes)
+                foreach (var vol in appConfig.Volumes?.Where(i => i.Value.Type == VolumeType.Directory))
                 {
-                    var path = appConfig.GetAppDataPath(vol.Value.SourceDir);
+                    var path = appConfig.GetAppDataPath(vol.Value.Source);
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
@@ -78,14 +78,14 @@ namespace Threax.K8sDeploy.Controller
                     Name = i.Key.ToLowerInvariant(),
                     HostPath = new V1HostPathVolumeSource()
                     {
-                        Path = CreateDockerWindowsPath(appConfig.GetAppDataPath(i.Value.SourceDir)),
-                        Type = "Directory"
+                        Path = CreateDockerWindowsPath(appConfig.GetAppDataPath(i.Value.Source)),
+                        Type = i.Value.Type.ToString()
                     }
                 }));
 
                 volumeMounts.AddRange(appConfig.Volumes?.Select(i => new V1VolumeMount()
                 {
-                    MountPath = i.Value.DestDir,
+                    MountPath = i.Value.Dest,
                     Name = i.Key.ToLowerInvariant()
                 }));
             }
