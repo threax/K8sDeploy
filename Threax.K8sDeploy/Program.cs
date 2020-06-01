@@ -26,7 +26,6 @@ namespace Threax.K8sDeploy
                     services.AddScoped<SchemaConfigurationBinder>(s => new SchemaConfigurationBinder(s.GetRequiredService<IConfiguration>()));
 
                     services.AddScoped<IProcessRunner, ProcessRunner>();
-                    services.AddScoped<ITokenReplacer, TokenReplacer>();
                     services.AddScoped<IConfigFileProvider, ConfigFileProvider>();
 
                     services.AddScoped<IKubernetes>(s =>

@@ -20,17 +20,15 @@ namespace Threax.K8sDeploy.Controller
         private AppConfig appConfig;
         private ILogger logger;
         private IProcessRunner processRunner;
-        private ITokenReplacer tokenReplacer;
         private readonly IKubernetes k8SClient;
         private readonly IConfigFileProvider configFileProvider;
 
-        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, ITokenReplacer tokenReplacer, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
+        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
         {
             this.appConfig = appConfig;
             this.logger = logger;
             this.processRunner = processRunner;
-            this.tokenReplacer = tokenReplacer;
-            k8SClient = k8sClient;
+            this.k8SClient = k8sClient;
             this.configFileProvider = configFileProvider;
         }
 
