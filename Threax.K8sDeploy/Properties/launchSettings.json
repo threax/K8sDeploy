@@ -5,27 +5,39 @@
     },
     "Clone": {
       "commandName": "Project",
-      "commandLineArgs": "clone appsettings.json"
+      "commandLineArgs": "clone Example/id/appsettings.json"
     },
     "Build": {
       "commandName": "Project",
-      "commandLineArgs": "build appsettings.json"
+      "commandLineArgs": "build Example/id/appsettings.json"
     },
     "Deploy": {
       "commandName": "Project",
-      "commandLineArgs": "deploy appsettings.json"
+      "commandLineArgs": "deploy Example/id/appsettings.json"
     },
     "CloneAppDashboard": {
       "commandName": "Project",
-      "commandLineArgs": "clone appsettings.appdashboard.json"
+      "commandLineArgs": "clone Example/appdashboard/appsettings.json"
     },
     "BuildAppDashboard": {
       "commandName": "Project",
-      "commandLineArgs": "build appsettings.appdashboard.json"
+      "commandLineArgs": "build Example/appdashboard/appsettings.json"
     },
     "DeployAppDashboard": {
       "commandName": "Project",
-      "commandLineArgs": "deploy appsettings.appdashboard.json"
+      "commandLineArgs": "deploy Example/appdashboard/appsettings.json"
+    },
+    "CloneNotes": {
+      "commandName": "Project",
+      "commandLineArgs": "clone Example/notes/appsettings.json"
+    },
+    "BuildNotes": {
+      "commandName": "Project",
+      "commandLineArgs": "build Example/notes/appsettings.json"
+    },
+    "DeployNotes": {
+      "commandName": "Project",
+      "commandLineArgs": "deploy Example/notes/appsettings.json"
     }
   }
 }

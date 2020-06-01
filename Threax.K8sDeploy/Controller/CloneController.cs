@@ -26,9 +26,7 @@ namespace Threax.K8sDeploy.Controller
 
         public Task Run()
         {
-            var clonePath = appConfig.GetSourcePath();
-
-            CloneGitRepo(appConfig.RepoUrl, clonePath);
+            CloneGitRepo(appConfig.RepoUrl, appConfig.ClonePath);
 
             return Task.CompletedTask;
         }

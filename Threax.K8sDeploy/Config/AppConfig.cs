@@ -11,7 +11,7 @@ namespace Threax.K8sDeploy.Config
         {
             this.SourceFile = sourceFile;
             this.AppDataBasePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "data"));
-            this.SrcBasePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "src"));
+            this.ClonePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "src"));
         }
 
         public String SourceFile { get; private set; }
@@ -26,7 +26,7 @@ namespace Threax.K8sDeploy.Config
 
         public long? Group { get; set; } = 10000;
 
-        public String SrcBasePath { get; set; }
+        public String ClonePath { get; set; }
 
         /// <summary>
         /// The branch of the repo to use. Default: master.
@@ -78,15 +78,6 @@ namespace Threax.K8sDeploy.Config
             {
                 throw new InvalidOperationException($"{nameof(BaseTag)} cannot be null. Please provide a value.");
             }
-        }
-
-        /// <summary>
-        /// Build the path to clone code into.
-        /// </summary>
-        /// <returns></returns>
-        public String GetSourcePath()
-        {
-            return Path.GetFullPath(Path.Combine(SrcBasePath, Name));
         }
 
         public String GetAppDataPath(String path)
