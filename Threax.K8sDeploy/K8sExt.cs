@@ -12,6 +12,12 @@ namespace Threax.K8sDeploy
     /// </summary>
     public static class K8sExt
     {
+        public static V1ConfigMap CreateOrReplaceNamespacedConfigMap(this IKubernetes operations, V1ConfigMap body, string namespaceParameter)
+        {
+            ExecuteIgnoreNotFound(() => operations.DeleteNamespacedConfigMap(body.Metadata.Name, namespaceParameter));
+            return operations.CreateNamespacedConfigMap(body, namespaceParameter);
+        }
+
         public static V1Deployment CreateOrReplaceNamespacedDeployment(this IKubernetes operations, V1Deployment body, string namespaceParameter)
         {
             ExecuteIgnoreNotFound(() => operations.DeleteNamespacedDeployment(body.Metadata.Name, namespaceParameter));

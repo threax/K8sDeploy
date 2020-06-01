@@ -19,6 +19,11 @@ namespace Threax.K8sDeploy.Config
 
         public String SrcBasePath { get; set; } = "src";
 
+        /// <summary>
+        /// The branch of the repo to use. Default: master.
+        /// </summary>
+        public String Branch { get; set; } = "master";
+
         public String AppDataBasePath { get; set; } = "data";
 
         public String Dockerfile { get; set; }
@@ -32,6 +37,21 @@ namespace Threax.K8sDeploy.Config
         public String InitCommand { get; set; }
 
         public Dictionary<String, Volume> Volumes { get; set; }
+
+        /// <summary>
+        /// Set this to true to auto mount the app settings config. Default: true.
+        /// </summary>
+        public bool AutoMountAppSettings { get; set; } = true;
+
+        /// <summary>
+        /// The mount path for the appsettings file. Default: /app/appsettings.Production.json.
+        /// </summary>
+        public String AppSettingsMountPath { get; set; } = "/app/appsettings.Production.json";
+
+        /// <summary>
+        /// The sub path for the appsettings file. Default: appsettings.Production.json.
+        /// </summary>
+        public String AppSettingsSubPath { get; set; } = "appsettings.Production.json";
 
         /// <summary>
         /// Validate that this config is correct. Throws an exception if there is an error.

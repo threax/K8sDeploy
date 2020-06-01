@@ -22,14 +22,16 @@ namespace Threax.K8sDeploy.Controller
         private IProcessRunner processRunner;
         private ITokenReplacer tokenReplacer;
         private readonly IKubernetes k8SClient;
+        private readonly IConfigFileProvider configFileProvider;
 
-        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, ITokenReplacer tokenReplacer, IKubernetes k8sClient)
+        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, ITokenReplacer tokenReplacer, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
         {
             this.appConfig = appConfig;
             this.logger = logger;
             this.processRunner = processRunner;
             this.tokenReplacer = tokenReplacer;
             k8SClient = k8sClient;
+            this.configFileProvider = configFileProvider;
         }
 
         public Task Run()
@@ -58,9 +60,12 @@ namespace Threax.K8sDeploy.Controller
 
             logger.LogInformation($"Redeploying '{image}' with tag '{latestDateTag}'.");
 
-            //Ensure app data path exists (will need to handle permissions here too eventually).
+            var volumes = new List<V1Volume>();
+            var volumeMounts = new List<V1VolumeMount>();
+
             if (appConfig.Volumes != null)
             {
+                //Ensure app data path exists (will need to handle permissions here too eventually).
                 foreach (var vol in appConfig.Volumes)
                 {
                     var path = appConfig.GetAppDataPath(vol.Value.SourceDir);
@@ -69,23 +74,45 @@ namespace Threax.K8sDeploy.Controller
                         Directory.CreateDirectory(path);
                     }
                 }
+
+                volumes.AddRange(appConfig.Volumes?.Select(i => new V1Volume()
+                {
+                    Name = i.Key.ToLowerInvariant(),
+                    HostPath = new V1HostPathVolumeSource()
+                    {
+                        Path = CreateDockerWindowsPath(appConfig.GetAppDataPath(i.Value.SourceDir)),
+                        Type = "Directory"
+                    }
+                }));
+
+                volumeMounts.AddRange(appConfig.Volumes?.Select(i => new V1VolumeMount()
+                {
+                    MountPath = i.Value.DestDir,
+                    Name = i.Key.ToLowerInvariant()
+                }));
             }
 
-            var volumes = appConfig.Volumes?.Select(i => new V1Volume()
+            if (appConfig.AutoMountAppSettings)
             {
-                Name = i.Key.ToLowerInvariant(),
-                HostPath = new V1HostPathVolumeSource()
+                volumes.Add(new V1Volume()
                 {
-                    Path = CreateDockerWindowsPath(appConfig.GetAppDataPath(i.Value.SourceDir)),
-                    Type = "Directory"
-                }
-            });
+                    Name = "k8sconfig-appsettings-json",
+                    ConfigMap = new V1ConfigMapVolumeSource()
+                    {
+                        Name = appConfig.Name
+                    }
+                });
 
-            var volumeMounts = appConfig.Volumes?.Select(i => new V1VolumeMount()
-            {
-                MountPath = i.Value.DestDir,
-                Name = i.Key.ToLowerInvariant()
-            });
+                volumeMounts.Add(new V1VolumeMount()
+                {
+                    Name = "k8sconfig-appsettings-json",
+                    MountPath = appConfig.AppSettingsMountPath,
+                    SubPath = appConfig.AppSettingsSubPath
+                });
+
+                var configMap = CreateConfigMap(appConfig.Name, new Dictionary<string, string>() { { "appsettings.Production.json", configFileProvider.GetConfigText() } });
+                k8SClient.CreateOrReplaceNamespacedConfigMap(configMap, Namespace);
+            }
 
             var deployment = CreateDeployment(appConfig.Name, latestDateTag, appConfig.User, appConfig.Group, volumes, volumeMounts);
             var service = CreateService(appConfig.Name);
@@ -101,6 +128,18 @@ namespace Threax.K8sDeploy.Controller
         private static string CreateDockerWindowsPath(string windowsPath)
         {
             return "/" + windowsPath.Replace("\\", "/").Remove(1, 1);
+        }
+
+        private V1ConfigMap CreateConfigMap(String name, Dictionary<String, String> data)
+        {
+            return new V1ConfigMap()
+            {
+                Metadata = new V1ObjectMeta()
+                {
+                    Name = name
+                },
+                Data = data
+            };
         }
 
         private Networkingv1beta1Ingress CreateIngress(String name, String host)
@@ -146,10 +185,12 @@ namespace Threax.K8sDeploy.Controller
             {
                 ApiVersion = "v1",
                 Kind = "Service",
-                Metadata = new V1ObjectMeta() {
+                Metadata = new V1ObjectMeta()
+                {
                     Name = name
                 },
-                Spec = new V1ServiceSpec() {
+                Spec = new V1ServiceSpec()
+                {
                     Selector = new Dictionary<String, String>() {
                         { "app", name }
                     },
