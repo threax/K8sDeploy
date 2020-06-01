@@ -5,15 +5,15 @@
     },
     "Clone": {
       "commandName": "Project",
-      "commandLineArgs": "clone"
+      "commandLineArgs": "clone appsettings.json"
     },
     "Build": {
       "commandName": "Project",
-      "commandLineArgs": "build"
+      "commandLineArgs": "build appsettings.json"
     },
     "Deploy": {
       "commandName": "Project",
-      "commandLineArgs": "deploy",
+      "commandLineArgs": "deploy appsettings.json",
       "workingDirectory": "$(ProjectDir)"
     }
   }

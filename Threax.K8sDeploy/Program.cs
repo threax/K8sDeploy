@@ -38,8 +38,11 @@ namespace Threax.K8sDeploy
 
                     services.AddScoped<AppConfig>(s =>
                     {
-                        var config = s.GetRequiredService<SchemaConfigurationBinder>();
-                        var appConfig = new AppConfig(Path.GetFullPath("appsettings.json"));
+                        var path = args[1];
+                        var configBuilder = new ConfigurationBuilder();
+                        configBuilder.AddJsonFile(path);
+                        var config = new SchemaConfigurationBinder(configBuilder.Build());
+                        var appConfig = new AppConfig(path);
                         config.Bind("K8sDeploy", appConfig);
                         appConfig.Validate();
                         return appConfig;

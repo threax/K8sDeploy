@@ -10,6 +10,8 @@ namespace Threax.K8sDeploy.Config
         public AppConfig(String sourceFile)
         {
             this.SourceFile = sourceFile;
+            this.AppDataBasePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "data"));
+            this.SrcBasePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "src"));
         }
 
         public String SourceFile { get; private set; }
@@ -24,14 +26,14 @@ namespace Threax.K8sDeploy.Config
 
         public long? Group { get; set; } = 10000;
 
-        public String SrcBasePath { get; set; } = "src";
+        public String SrcBasePath { get; set; }
 
         /// <summary>
         /// The branch of the repo to use. Default: master.
         /// </summary>
         public String Branch { get; set; } = "master";
 
-        public String AppDataBasePath { get; set; } = "data";
+        public String AppDataBasePath { get; set; }
 
         public String Dockerfile { get; set; }
 
