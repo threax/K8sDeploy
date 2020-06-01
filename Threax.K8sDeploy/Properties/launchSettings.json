@@ -13,8 +13,19 @@
     },
     "Deploy": {
       "commandName": "Project",
-      "commandLineArgs": "deploy appsettings.json",
-      "workingDirectory": "$(ProjectDir)"
+      "commandLineArgs": "deploy appsettings.json"
+    },
+    "CloneAppDashboard": {
+      "commandName": "Project",
+      "commandLineArgs": "clone appsettings.appdashboard.json"
+    },
+    "BuildAppDashboard": {
+      "commandName": "Project",
+      "commandLineArgs": "build appsettings.appdashboard.json"
+    },
+    "DeployAppDashboard": {
+      "commandName": "Project",
+      "commandLineArgs": "deploy appsettings.appdashboard.json"
     }
   }
 }
