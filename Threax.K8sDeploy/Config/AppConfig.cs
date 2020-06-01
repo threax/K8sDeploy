@@ -31,6 +31,8 @@ namespace Threax.K8sDeploy.Config
 
         public String InitCommand { get; set; }
 
+        public Dictionary<String, Volume> Volumes { get; set; }
+
         /// <summary>
         /// Validate that this config is correct. Throws an exception if there is an error.
         /// </summary>
@@ -56,13 +58,9 @@ namespace Threax.K8sDeploy.Config
             return Path.GetFullPath(Path.Combine(SrcBasePath, Name));
         }
 
-        /// <summary>
-        /// Build the path to clone code into.
-        /// </summary>
-        /// <returns></returns>
-        public String GetAppDataPath()
+        public String GetAppDataPath(String path)
         {
-            return Path.GetFullPath(Path.Combine(AppDataBasePath, Name));
+            return Path.GetFullPath(Path.Combine(AppDataBasePath, path));
         }
 
         public String GetBuildTag()

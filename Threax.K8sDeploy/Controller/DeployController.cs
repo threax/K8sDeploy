@@ -36,7 +36,6 @@ namespace Threax.K8sDeploy.Controller
         {
             var image = appConfig.Name;
             var currentTag = appConfig.GetCurrentTag();
-            var deploymentFile = Path.GetFullPath(appConfig.DeploymentFile ?? throw new InvalidOperationException("You must provide a deployment file to use deploy."));
 
             //Get the tags from docker
             var args = $"inspect --format=\"{{{{json .RepoTags}}}}\" {image}:{currentTag}";
@@ -60,16 +59,35 @@ namespace Threax.K8sDeploy.Controller
             logger.LogInformation($"Redeploying '{image}' with tag '{latestDateTag}'.");
 
             //Ensure app data path exists (will need to handle permissions here too eventually).
-            var appdataPath = appConfig.GetAppDataPath();
-            if (!Directory.Exists(appdataPath))
+            if (appConfig.Volumes != null)
             {
-                Directory.CreateDirectory(appdataPath);
+                foreach (var vol in appConfig.Volumes)
+                {
+                    var path = appConfig.GetAppDataPath(vol.Value.SourceDir);
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                }
             }
 
-            //Hack up windows path
-            appdataPath = "/" + appdataPath.Replace("\\", "/").Remove(1, 1);
+            var volumes = appConfig.Volumes?.Select(i => new V1Volume()
+            {
+                Name = i.Key.ToLowerInvariant(),
+                HostPath = new V1HostPathVolumeSource()
+                {
+                    Path = CreateDockerWindowsPath(appConfig.GetAppDataPath(i.Value.SourceDir)),
+                    Type = "Directory"
+                }
+            });
 
-            var deployment = CreateDeployment(appConfig.Name, latestDateTag, appdataPath, appConfig.User, appConfig.Group);
+            var volumeMounts = appConfig.Volumes?.Select(i => new V1VolumeMount()
+            {
+                MountPath = i.Value.DestDir,
+                Name = i.Key.ToLowerInvariant()
+            });
+
+            var deployment = CreateDeployment(appConfig.Name, latestDateTag, appConfig.User, appConfig.Group, volumes, volumeMounts);
             var service = CreateService(appConfig.Name);
             var ingress = CreateIngress(appConfig.Name, $"{appConfig.Name}.{appConfig.Domain}");
 
@@ -78,6 +96,11 @@ namespace Threax.K8sDeploy.Controller
             k8SClient.CreateOrReplaceNamespacedIngress1(ingress, Namespace);
 
             return Task.CompletedTask;
+        }
+
+        private static string CreateDockerWindowsPath(string windowsPath)
+        {
+            return "/" + windowsPath.Replace("\\", "/").Remove(1, 1);
         }
 
         private Networkingv1beta1Ingress CreateIngress(String name, String host)
@@ -140,7 +163,7 @@ namespace Threax.K8sDeploy.Controller
             };
         }
 
-        private V1Deployment CreateDeployment(String name, String image, String appdataPath, long? user, long? group)
+        private V1Deployment CreateDeployment(String name, String image, long? user, long? group, IEnumerable<V1Volume> volumes, IEnumerable<V1VolumeMount> volumeMounts)
         {
             //Try to build an object
             return new V1Deployment()
@@ -170,6 +193,7 @@ namespace Threax.K8sDeploy.Controller
                         },
                         Spec = new V1PodSpec()
                         {
+                            Volumes = volumes?.ToList(),
                             Containers = new List<V1Container>() {
                                 new V1Container() {
                                     Name = "app",
@@ -186,12 +210,7 @@ namespace Threax.K8sDeploy.Controller
                                             ContainerPort = 5000
                                         }
                                     },
-                                    VolumeMounts = new List<V1VolumeMount>() {
-                                        new V1VolumeMount() {
-                                            MountPath = "/appdata",
-                                            Name = "appdata-volume"
-                                        }
-                                    }
+                                    VolumeMounts = volumeMounts?.ToList()
                                 }
                             },
                             //Make InitContainers optional
@@ -212,21 +231,7 @@ namespace Threax.K8sDeploy.Controller
                                             ContainerPort = 5000
                                         }
                                     },
-                                    VolumeMounts = new List<V1VolumeMount>() {
-                                        new V1VolumeMount() {
-                                            MountPath = "/appdata",
-                                            Name = "appdata-volume"
-                                        }
-                                    },
-                                }
-                            },
-                            Volumes = new List<V1Volume>() {
-                                new V1Volume() {
-                                    Name = "appdata-volume",
-                                    HostPath = new V1HostPathVolumeSource() {
-                                        Path = appdataPath,
-                                        Type = "Directory"
-                                    }
+                                    VolumeMounts = volumeMounts?.ToList(),
                                 }
                             },
                             SecurityContext = new V1PodSecurityContext()
