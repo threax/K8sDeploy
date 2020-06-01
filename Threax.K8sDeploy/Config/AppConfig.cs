@@ -45,6 +45,8 @@ namespace Threax.K8sDeploy.Config
 
         public Dictionary<String, Volume> Volumes { get; set; }
 
+        public Dictionary<String, Secret> Secrets { get; set; }
+
         /// <summary>
         /// Set this to true to auto mount the app settings config. Default: true.
         /// </summary>

@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Threax.K8sDeploy.Config
 {
-    public class Volume
+    public class Secret
     {
-        public String Source { get; set; }
+        public String SecretName { get; set; }
 
         public String Dest { get; set; }
 
         /// <summary>
-        /// The type of the volume mount. Default: Directory
+        /// The type of the secret mount. Default: Directory
         /// </summary>
         public PathType Type { get; set; } = PathType.Directory;
     }

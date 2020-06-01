@@ -64,7 +64,7 @@ namespace Threax.K8sDeploy.Controller
             if (appConfig.Volumes != null)
             {
                 //Ensure app data path exists (will need to handle permissions here too eventually).
-                foreach (var vol in appConfig.Volumes?.Where(i => i.Value.Type == VolumeType.Directory))
+                foreach (var vol in appConfig.Volumes?.Where(i => i.Value.Type == PathType.Directory))
                 {
                     var path = appConfig.GetAppDataPath(vol.Value.Source);
                     if (!Directory.Exists(path))
@@ -110,6 +110,27 @@ namespace Threax.K8sDeploy.Controller
 
                 var configMap = CreateConfigMap(appConfig.Name, new Dictionary<string, string>() { { "appsettings.Production.json", configFileProvider.GetConfigText() } });
                 k8SClient.CreateOrReplaceNamespacedConfigMap(configMap, Namespace);
+            }
+
+            if(appConfig.Secrets != null)
+            {
+                volumes.AddRange(appConfig.Secrets.Select(i =>
+                    new V1Volume()
+                    {
+                        Name = $"k8sconfig-secret-{i.Key.ToLowerInvariant()}",
+                        Secret = new V1SecretVolumeSource()
+                        {
+                            SecretName = i.Value.SecretName
+                        }
+                    }));
+
+                volumeMounts.AddRange(appConfig.Secrets.Select(i =>
+                    new V1VolumeMount()
+                    {
+                        Name = $"k8sconfig-secret-{i.Key.ToLowerInvariant()}",
+                        MountPath = i.Value.Dest,
+                        SubPath = i.Value.Type == PathType.File ? Path.GetFileName(i.Value.Dest) : null
+                    }));
             }
 
             var deployment = CreateDeployment(appConfig.Name, latestDateTag, appConfig.User, appConfig.Group, volumes, volumeMounts);
