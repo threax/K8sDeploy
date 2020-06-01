@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using k8s;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,7 @@ namespace Threax.K8sDeploy
                     services.AddScoped<AppConfig>(s =>
                     {
                         var config = s.GetRequiredService<SchemaConfigurationBinder>();
-                        var appConfig = new AppConfig();
+                        var appConfig = new AppConfig(Path.GetFullPath("appsettings.json"));
                         config.Bind("K8sDeploy", appConfig);
                         appConfig.Validate();
                         return appConfig;

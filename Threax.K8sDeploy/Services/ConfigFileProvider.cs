@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Threax.K8sDeploy.Config;
 
 namespace Threax.K8sDeploy.Services
 {
-    public class ConfigFileProvider : IConfigFileProvider
+    class ConfigFileProvider : IConfigFileProvider
     {
+        private readonly AppConfig appConfig;
+
+        public ConfigFileProvider(AppConfig appConfig)
+        {
+            this.appConfig = appConfig;
+        }
+
         public String GetConfigText()
         {
-            var path = Path.GetFullPath("appsettings.json");
+            var path = appConfig.SourceFile;
 
             using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var reader = new StreamReader(stream);

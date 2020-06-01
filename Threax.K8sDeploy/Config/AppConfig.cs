@@ -7,6 +7,13 @@ namespace Threax.K8sDeploy.Config
 {
     class AppConfig
     {
+        public AppConfig(String sourceFile)
+        {
+            this.SourceFile = sourceFile;
+        }
+
+        public String SourceFile { get; private set; }
+
         public String Name { get; set; }
 
         public String Domain { get; set; } = "dev.threax.com";
