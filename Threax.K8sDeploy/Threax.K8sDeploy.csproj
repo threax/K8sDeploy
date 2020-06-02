@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Threax.K8sDeploy.Config\Threax.K8sDeploy.Config.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Example\notes\appsettings.secrets.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

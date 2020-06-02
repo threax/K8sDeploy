@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Threax.K8sDeploy.Config
 {
-    class AppConfig
+    public class AppConfig
     {
         public AppConfig(String sourceFile)
         {
