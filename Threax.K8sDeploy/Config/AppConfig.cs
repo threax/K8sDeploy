@@ -49,6 +49,8 @@ namespace Threax.K8sDeploy.Config
 
         public Dictionary<String, Secret> Secrets { get; set; }
 
+        public String PodJsonFile { get; set; } = "pod.json";
+
         /// <summary>
         /// Set this to true to auto mount the app settings config. Default: true.
         /// </summary>

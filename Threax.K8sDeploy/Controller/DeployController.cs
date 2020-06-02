@@ -62,6 +62,25 @@ namespace Threax.K8sDeploy.Controller
             var volumes = new List<V1Volume>();
             var volumeMounts = new List<V1VolumeMount>();
 
+            SetupVolumes(volumes, volumeMounts);
+            MountAppSettings(volumes, volumeMounts);
+            SetupSecrets(volumes, volumeMounts);
+
+            var deployment = CreateDeployment(appConfig.Name, latestDateTag, appConfig.User, appConfig.Group, volumes, volumeMounts);
+            var service = CreateService(appConfig.Name);
+            var ingress = CreateIngress(appConfig.Name, $"{appConfig.Name}.{appConfig.Domain}");
+
+            var deployed = k8SClient.CreateOrReplaceNamespacedDeployment(deployment, Namespace);
+            k8SClient.CreateOrReplaceNamespacedService(service, Namespace);
+            k8SClient.CreateOrReplaceNamespacedIngress1(ingress, Namespace);
+
+            FindPod(deployed);
+
+            return Task.CompletedTask;
+        }
+
+        private void SetupVolumes(List<V1Volume> volumes, List<V1VolumeMount> volumeMounts)
+        {
             if (appConfig.Volumes != null)
             {
                 //Ensure app data path exists (will need to handle permissions here too eventually).
@@ -90,7 +109,10 @@ namespace Threax.K8sDeploy.Controller
                     Name = i.Key.ToLowerInvariant()
                 }));
             }
+        }
 
+        private void MountAppSettings(List<V1Volume> volumes, List<V1VolumeMount> volumeMounts)
+        {
             if (appConfig.AutoMountAppSettings)
             {
                 volumes.Add(new V1Volume()
@@ -112,11 +134,14 @@ namespace Threax.K8sDeploy.Controller
                 var configMap = CreateConfigMap(appConfig.Name, new Dictionary<string, string>() { { "appsettings.Production.json", configFileProvider.GetConfigText() } });
                 k8SClient.CreateOrReplaceNamespacedConfigMap(configMap, Namespace);
             }
+        }
 
-            if(appConfig.Secrets != null)
+        private void SetupSecrets(List<V1Volume> volumes, List<V1VolumeMount> volumeMounts)
+        {
+            if (appConfig.Secrets != null)
             {
                 //Create any secrets that have a source set
-                foreach(var secret in appConfig.Secrets.Where(i => !String.IsNullOrWhiteSpace(i.Value.Source)))
+                foreach (var secret in appConfig.Secrets.Where(i => !String.IsNullOrWhiteSpace(i.Value.Source)))
                 {
                     var secretPath = appConfig.GetConfigPath(secret.Value.Source);
                     var data = File.ReadAllText(secretPath);
@@ -157,16 +182,26 @@ namespace Threax.K8sDeploy.Controller
                         SubPath = i.Value.Type == PathType.File ? Path.GetFileName(i.Value.Dest) : null
                     }));
             }
+        }
 
-            var deployment = CreateDeployment(appConfig.Name, latestDateTag, appConfig.User, appConfig.Group, volumes, volumeMounts);
-            var service = CreateService(appConfig.Name);
-            var ingress = CreateIngress(appConfig.Name, $"{appConfig.Name}.{appConfig.Domain}");
+        private void FindPod(V1Deployment deployed)
+        {
+            var key = "app";
+            if (deployed.Spec.Selector.MatchLabels.TryGetValue(key, out var value))
+            {
+                var pods = k8SClient.ListNamespacedPod(Namespace, labelSelector: $"{key}={value}");
 
-            k8SClient.CreateOrReplaceNamespacedDeployment(deployment, Namespace);
-            k8SClient.CreateOrReplaceNamespacedService(service, Namespace);
-            k8SClient.CreateOrReplaceNamespacedIngress1(ingress, Namespace);
+                var latestPod = pods.Items.Where(i => i.Metadata.DeletionTimestamp == null).FirstOrDefault(); //Find not deleted pod
 
-            return Task.CompletedTask;
+                var podJsonPath = appConfig.GetConfigPath(appConfig.PodJsonFile);
+                logger.LogInformation($"Writing pod info to '{podJsonPath}'.");
+                using (var streamWriter = new StreamWriter(File.Open(podJsonPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None)))
+                {
+                    var podJson = JsonSerializer.Serialize(latestPod);
+                    streamWriter.Write(podJson);
+                    streamWriter.Close();
+                }
+            }
         }
 
         private static string CreateDockerWindowsPath(string windowsPath)
