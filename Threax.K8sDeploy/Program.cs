@@ -22,9 +22,16 @@ namespace Threax.K8sDeploy
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    var jsonConfigPath = args[1];
+
                     services.AddHostedService<HostedService>();
 
-                    services.AddScoped<SchemaConfigurationBinder>(s => new SchemaConfigurationBinder(s.GetRequiredService<IConfiguration>()));
+                    services.AddScoped<SchemaConfigurationBinder>(s =>
+                    {
+                        var configBuilder = new ConfigurationBuilder();
+                        configBuilder.AddJsonFile(jsonConfigPath);
+                        return new SchemaConfigurationBinder(configBuilder.Build());
+                    });
 
                     services.AddScoped<IProcessRunner, ProcessRunner>();
                     services.AddScoped<IConfigFileProvider, ConfigFileProvider>();
@@ -38,11 +45,8 @@ namespace Threax.K8sDeploy
 
                     services.AddScoped<AppConfig>(s =>
                     {
-                        var path = args[1];
-                        var configBuilder = new ConfigurationBuilder();
-                        configBuilder.AddJsonFile(path);
-                        var config = new SchemaConfigurationBinder(configBuilder.Build());
-                        var appConfig = new AppConfig(path);
+                        var config = s.GetRequiredService<SchemaConfigurationBinder>();
+                        var appConfig = new AppConfig(jsonConfigPath);
                         config.Bind("K8sDeploy", appConfig);
                         appConfig.Validate();
                         return appConfig;

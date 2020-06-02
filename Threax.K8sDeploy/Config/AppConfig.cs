@@ -52,6 +52,11 @@ namespace Threax.K8sDeploy.Config
         public String PodJsonFile { get; set; } = "pod.json";
 
         /// <summary>
+        /// The path to the schema file when running in UpdateSchema mode.
+        /// </summary>
+        public String SchemaOutputPath { get; set; } = "schema.json";
+
+        /// <summary>
         /// Set this to true to auto mount the app settings config. Default: true.
         /// </summary>
         public bool AutoMountAppSettings { get; set; } = true;

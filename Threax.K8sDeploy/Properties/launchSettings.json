@@ -11,6 +11,10 @@
       "commandName": "Project",
       "commandLineArgs": "build Example/id/appsettings.json"
     },
+    "UpdateSchema": {
+      "commandName": "Project",
+      "commandLineArgs": "UpdateSchema Example/id/appsettings.json"
+    },
     "Deploy": {
       "commandName": "Project",
       "commandLineArgs": "deploy Example/id/appsettings.json"
