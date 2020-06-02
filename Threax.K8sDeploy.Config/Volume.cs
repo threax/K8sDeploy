@@ -8,7 +8,7 @@ namespace Threax.K8sDeploy.Config
     {
         public String Source { get; set; }
 
-        public String Dest { get; set; }
+        public String Destination { get; set; }
 
         /// <summary>
         /// The type of the volume mount. Default: Directory

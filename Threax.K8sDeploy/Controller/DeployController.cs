@@ -105,7 +105,7 @@ namespace Threax.K8sDeploy.Controller
 
                 volumeMounts.AddRange(appConfig.Volumes?.Select(i => new V1VolumeMount()
                 {
-                    MountPath = i.Value.Dest,
+                    MountPath = i.Value.Destination,
                     Name = i.Key.ToLowerInvariant()
                 }));
             }
@@ -178,8 +178,8 @@ namespace Threax.K8sDeploy.Controller
                     new V1VolumeMount()
                     {
                         Name = $"k8sconfig-secret-{i.Key.ToLowerInvariant()}",
-                        MountPath = i.Value.Dest,
-                        SubPath = i.Value.Type == PathType.File ? Path.GetFileName(i.Value.Dest) : null
+                        MountPath = i.Value.Destination,
+                        SubPath = i.Value.Type == PathType.File ? Path.GetFileName(i.Value.Destination) : null
                     }));
             }
         }
