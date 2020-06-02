@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Threax.K8sDeploy.Config;
@@ -114,13 +115,37 @@ namespace Threax.K8sDeploy.Controller
 
             if(appConfig.Secrets != null)
             {
+                //Create any secrets that have a source set
+                foreach(var secret in appConfig.Secrets.Where(i => !String.IsNullOrWhiteSpace(i.Value.Source)))
+                {
+                    var secretPath = appConfig.GetConfigPath(secret.Value.Source);
+                    var data = File.ReadAllText(secretPath);
+
+                    var v1Secret = new V1Secret()
+                    {
+                        ApiVersion = "v1",
+                        Kind = "Secret",
+                        Type = "Opaque",
+                        Metadata = new V1ObjectMeta()
+                        {
+                            Name = secret.Value.GetSecretName(appConfig.Name, secret.Key),
+                        },
+                        StringData = new Dictionary<String, string>()
+                        {
+                            { Path.GetFileName(secretPath), data }
+                        }
+                    };
+
+                    k8SClient.CreateOrReplaceNamespacedSecret(v1Secret, Namespace);
+                }
+
                 volumes.AddRange(appConfig.Secrets.Select(i =>
                     new V1Volume()
                     {
                         Name = $"k8sconfig-secret-{i.Key.ToLowerInvariant()}",
                         Secret = new V1SecretVolumeSource()
                         {
-                            SecretName = i.Value.SecretName
+                            SecretName = i.Value.GetSecretName(appConfig.Name, i.Key)
                         }
                     }));
 

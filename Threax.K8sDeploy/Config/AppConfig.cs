@@ -85,6 +85,11 @@ namespace Threax.K8sDeploy.Config
             return Path.GetFullPath(Path.Combine(AppDataBasePath, path));
         }
 
+        public String GetConfigPath(String path)
+        {
+            return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(SourceFile), path));
+        }
+
         public String GetBuildTag()
         {
             return $"{BaseTag}-{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}";
