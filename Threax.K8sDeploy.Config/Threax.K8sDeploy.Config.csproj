@@ -5,6 +5,7 @@
     <Version>0.0.0-pre01</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>The config objects for Threax.K8sDeploy. Makes it easy to include them in your app's configuration schema by including this project.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
