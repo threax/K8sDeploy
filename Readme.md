@@ -6,7 +6,7 @@ You can add the configuration objects to your app's config by doing the followin
 
 Add the `Threax.K8sDeploy.Config` library to your project. You can do it like the following, but make sure to get the latest version.
 ```
-<PackageReference Include="Threax.K8sDeploy.Config" Version="1.0.0" GeneratePathProperty="true" />
+<PackageReference Include="Threax.K8sDeploy.Config" Version="1.0.1" GeneratePathProperty="true" />
 ```
 `GeneratePathProperty` will let us copy the documentation files.
 
