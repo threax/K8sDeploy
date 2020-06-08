@@ -13,11 +13,11 @@ namespace Threax.K8sDeploy.Controller
 {
     class BuildController : IController
     {
-        private AppConfig appConfig;
+        private K8sDeployConfig appConfig;
         private ILogger logger;
         private IProcessRunner processRunner;
 
-        public BuildController(AppConfig appConfig, ILogger<BuildController> logger, IProcessRunner processRunner)
+        public BuildController(K8sDeployConfig appConfig, ILogger<BuildController> logger, IProcessRunner processRunner)
         {
             this.appConfig = appConfig;
             this.logger = logger;

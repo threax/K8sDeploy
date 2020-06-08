@@ -43,10 +43,10 @@ namespace Threax.K8sDeploy
                         return client;
                     });
 
-                    services.AddScoped<AppConfig>(s =>
+                    services.AddScoped<K8sDeployConfig>(s =>
                     {
                         var config = s.GetRequiredService<SchemaConfigurationBinder>();
-                        var appConfig = new AppConfig(jsonConfigPath);
+                        var appConfig = new K8sDeployConfig(jsonConfigPath);
                         config.Bind("K8sDeploy", appConfig);
                         appConfig.Validate();
                         return appConfig;

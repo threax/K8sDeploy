@@ -18,13 +18,13 @@ namespace Threax.K8sDeploy.Controller
     {
         private const String Namespace = "default";
 
-        private AppConfig appConfig;
+        private K8sDeployConfig appConfig;
         private ILogger logger;
         private IProcessRunner processRunner;
         private readonly IKubernetes k8SClient;
         private readonly IConfigFileProvider configFileProvider;
 
-        public DeployController(AppConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
+        public DeployController(K8sDeployConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
         {
             this.appConfig = appConfig;
             this.logger = logger;

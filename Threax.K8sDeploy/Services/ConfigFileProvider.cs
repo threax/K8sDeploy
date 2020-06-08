@@ -8,9 +8,9 @@ namespace Threax.K8sDeploy.Services
 {
     class ConfigFileProvider : IConfigFileProvider
     {
-        private readonly AppConfig appConfig;
+        private readonly K8sDeployConfig appConfig;
 
-        public ConfigFileProvider(AppConfig appConfig)
+        public ConfigFileProvider(K8sDeployConfig appConfig)
         {
             this.appConfig = appConfig;
         }

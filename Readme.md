@@ -20,7 +20,7 @@ This will copy the documentation files to the output directory on build. This wi
 
 Add the following to the constructor in Startup.cs.
 ```
-Configuration.Define("K8sDeploy", typeof(Threax.K8sDeploy.Config.AppConfig));
+Configuration.Define("K8sDeploy", typeof(Threax.K8sDeploy.Config.K8sDeployConfig));
 ```
 
 Finally run your app in `Update Config Schema` mode to update your config schema.

@@ -9,13 +9,13 @@ namespace Threax.K8sDeploy.Config
     /// <summary>
     /// Configuration for k8s deployment.
     /// </summary>
-    public class AppConfig
+    public class K8sDeployConfig
     {
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="sourceFile"></param>
-        public AppConfig(String sourceFile)
+        public K8sDeployConfig(String sourceFile)
         {
             this.SourceFile = sourceFile;
             this.AppDataBasePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "data"));

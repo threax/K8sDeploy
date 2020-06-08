@@ -15,10 +15,10 @@ namespace Threax.K8sDeploy.Controller
         string localRefRoot = "refs/heads/";
         String remoteRefRoot = "refs/remotes/origin/";
 
-        private AppConfig appConfig;
+        private K8sDeployConfig appConfig;
         private ILogger logger;
 
-        public CloneController(AppConfig appConfig, ILogger<CloneController> logger)
+        public CloneController(K8sDeployConfig appConfig, ILogger<CloneController> logger)
         {
             this.appConfig = appConfig;
             this.logger = logger;
