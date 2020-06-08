@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Threax.K8sDeploy", "Threax.K8sDeploy\Threax.K8sDeploy.csproj", "{FA882551-1224-4640-AADB-BCFDFD2A14A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Threax.K8sDeploy.Config", "Threax.K8sDeploy.Config\Threax.K8sDeploy.Config.csproj", "{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Threax.K8sDeploy.Config", "Threax.K8sDeploy.Config\Threax.K8sDeploy.Config.csproj", "{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E00C37AD-4EF1-4BAE-8AE6-4B985650BC3B}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
