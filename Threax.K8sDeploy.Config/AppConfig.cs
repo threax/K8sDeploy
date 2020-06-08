@@ -1,12 +1,20 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace Threax.K8sDeploy.Config
 {
+    /// <summary>
+    /// Configuration for k8s deployment.
+    /// </summary>
     public class AppConfig
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="sourceFile"></param>
         public AppConfig(String sourceFile)
         {
             this.SourceFile = sourceFile;
@@ -14,41 +22,87 @@ namespace Threax.K8sDeploy.Config
             this.ClonePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "src"));
         }
 
+        /// <summary>
+        /// The path to the source file of this app config.
+        /// </summary>
+        [JsonIgnore]
         public String SourceFile { get; private set; }
 
+        /// <summary>
+        /// The path to clone files to.
+        /// </summary>
+        [JsonIgnore]
+        public String ClonePath { get; private set; }
+
+        /// <summary>
+        /// The path that provides the root volume for relative volume mounts.
+        /// </summary>
+        [JsonIgnore]
+        public String AppDataBasePath { get; private set; }
+
+        /// <summary>
+        /// The name of the app. Is used as a unique key for many settings including urls.
+        /// </summary>
         public String Name { get; set; }
 
+        /// <summary>
+        /// The domain to host the apps on.
+        /// </summary>
         public String Domain { get; set; } = "dev.threax.com";
 
+        /// <summary>
+        /// The url of the repository with the app's code.
+        /// </summary>
         public String RepoUrl { get; set; }
 
+        /// <summary>
+        /// The user id to run the app as. Default: 10000.
+        /// </summary>
         public long? User { get; set; } = 10000;
 
+        /// <summary>
+        /// The group id to run the app as. Default: 10000.
+        /// </summary>
         public long? Group { get; set; } = 10000;
-
-        public String ClonePath { get; set; }
 
         /// <summary>
         /// The branch of the repo to use. Default: master.
         /// </summary>
         public String Branch { get; set; } = "master";
 
-        public String AppDataBasePath { get; set; }
-
+        /// <summary>
+        /// The path to the dockerfile. This must be specified to use Build.
+        /// </summary>
         public String Dockerfile { get; set; }
 
+        /// <summary>
+        /// The base tag of the app. This is used when looking up image builds without a registry.
+        /// </summary>
         public String BaseTag { get; set; } = "k8sdeploy";
 
+        /// <summary>
+        /// Set this to true to always pull base images when building. Default: True.
+        /// </summary>
         public bool AlwaysPull { get; set; } = true;
 
-        public String DeploymentFile { get; set; } = "AppDeployment.yaml";
-
+        /// <summary>
+        /// If this is set to a string that command will be run inside an InitContainer before the main container is started.
+        /// </summary>
         public String InitCommand { get; set; }
 
+        /// <summary>
+        /// A map of volume mounts.
+        /// </summary>
         public Dictionary<String, Volume> Volumes { get; set; }
 
+        /// <summary>
+        /// A map of secrets.
+        /// </summary>
         public Dictionary<String, Secret> Secrets { get; set; }
 
+        /// <summary>
+        /// The name of the pod info json file to generate. Default: pod.json.
+        /// </summary>
         public String PodJsonFile { get; set; } = "pod.json";
 
         /// <summary>

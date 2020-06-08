@@ -4,10 +4,19 @@ using System.Text;
 
 namespace Threax.K8sDeploy.Config
 {
+    /// <summary>
+    /// A volume definition.
+    /// </summary>
     public class Volume
     {
+        /// <summary>
+        /// The source directory. If no leading / is provided the path will be relative to the AppData path for the app.
+        /// </summary>
         public String Source { get; set; }
 
+        /// <summary>
+        /// The path to mount the volume in in the container.
+        /// </summary>
         public String Destination { get; set; }
 
         /// <summary>
