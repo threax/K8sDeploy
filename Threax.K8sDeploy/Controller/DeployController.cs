@@ -286,7 +286,7 @@ namespace Threax.K8sDeploy.Controller
         private V1Deployment CreateDeployment(String name, String image, long? user, long? group, IEnumerable<V1Volume> volumes, IEnumerable<V1VolumeMount> volumeMounts)
         {
             //Try to build an object
-            return new V1Deployment()
+            var deployment = new V1Deployment()
             {
                 ApiVersion = "apps/v1",
                 Kind = "Deployment",
@@ -333,27 +333,6 @@ namespace Threax.K8sDeploy.Controller
                                     VolumeMounts = volumeMounts?.ToList()
                                 }
                             },
-                            //Make InitContainers optional
-                            InitContainers = new List<V1Container>() {
-                                new V1Container() {
-                                    Name = "app-init",
-                                    Command = new List<String>() { "sh", "-c", appConfig.InitCommand },
-                                    Image = image,
-                                    Env = new List<V1EnvVar>() {
-                                        new V1EnvVar() {
-                                            Name = "ASPNETCORE_URLS",
-                                            Value = "http://*:5000"
-                                        }
-                                    },
-                                    ImagePullPolicy = "IfNotPresent",
-                                    Ports = new List<V1ContainerPort>() {
-                                        new V1ContainerPort() {
-                                            ContainerPort = 5000
-                                        }
-                                    },
-                                    VolumeMounts = volumeMounts?.ToList(),
-                                }
-                            },
                             SecurityContext = new V1PodSecurityContext()
                             {
                                 RunAsUser = user,
@@ -364,6 +343,33 @@ namespace Threax.K8sDeploy.Controller
                     },
                 },
             };
+
+            if (!String.IsNullOrEmpty(appConfig.InitCommand))
+            {
+                deployment.Spec.Template.Spec.InitContainers = new List<V1Container>()
+                {
+                    new V1Container() {
+                        Name = "app-init",
+                        Command = new List<String>() { "sh", "-c", appConfig.InitCommand },
+                        Image = image,
+                        Env = new List<V1EnvVar>() {
+                            new V1EnvVar() {
+                                Name = "ASPNETCORE_URLS",
+                                Value = "http://*:5000"
+                            }
+                        },
+                        ImagePullPolicy = "IfNotPresent",
+                        Ports = new List<V1ContainerPort>() {
+                            new V1ContainerPort() {
+                                ContainerPort = 5000
+                            }
+                        },
+                        VolumeMounts = volumeMounts?.ToList(),
+                    }
+                };
+            }
+
+            return deployment;
         }
     }
 }
