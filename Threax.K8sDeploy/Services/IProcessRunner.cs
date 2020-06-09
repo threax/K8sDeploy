@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Threax.K8sDeploy.Services
 {
-    interface IProcessRunner
+    public interface IProcessRunner
     {
         /// <summary>
         /// Run a process with output to the console.

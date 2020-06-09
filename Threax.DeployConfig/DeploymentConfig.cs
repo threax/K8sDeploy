@@ -58,12 +58,12 @@ namespace Threax.DeployConfig
         /// <summary>
         /// The user id to run the app as. Default: 10000.
         /// </summary>
-        public long? User { get; set; } = 10000;
+        public String User { get; set; } = "10000";
 
         /// <summary>
         /// The group id to run the app as. Default: 10000.
         /// </summary>
-        public long? Group { get; set; } = 10000;
+        public String Group { get; set; } = "10000";
 
         /// <summary>
         /// The branch of the repo to use. Default: master.

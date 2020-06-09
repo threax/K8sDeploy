@@ -8,6 +8,7 @@ using Threax.Extensions.Configuration.SchemaBinder;
 using Threax.DeployConfig;
 using Threax.K8sDeploy.Controller;
 using Threax.K8sDeploy.Services;
+using System.Runtime.InteropServices;
 
 namespace Threax.K8sDeploy
 {
@@ -35,6 +36,15 @@ namespace Threax.K8sDeploy
 
                     services.AddScoped<IProcessRunner, ProcessRunner>();
                     services.AddScoped<IConfigFileProvider, ConfigFileProvider>();
+
+                    services.AddScoped<IOSHandler>(s =>
+                    {
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            return new OSHandlerWindows();
+                        }
+                        return new OSHandlerLinux(s.GetRequiredService<IProcessRunner>());
+                    });
 
                     services.AddScoped<IKubernetes>(s =>
                     {

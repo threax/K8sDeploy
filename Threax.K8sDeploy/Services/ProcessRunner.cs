@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Threax.K8sDeploy.Services
 {
-    class ProcessRunner : IProcessRunner
+    public class ProcessRunner : IProcessRunner
     {
         public void RunProcessWithOutput(ProcessStartInfo startInfo)
         {

@@ -23,5 +23,10 @@ namespace Threax.DeployConfig
         /// The type of the volume mount. Default: Directory
         /// </summary>
         public PathType Type { get; set; } = PathType.Directory;
+
+        /// <summary>
+        /// Set this to true to have the deploy app manage permissions for the source directory. Default: true.
+        /// </summary>
+        public bool ManagePermissions { get; set; } = true;
     }
 }

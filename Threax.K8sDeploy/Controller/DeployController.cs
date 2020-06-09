@@ -23,14 +23,16 @@ namespace Threax.K8sDeploy.Controller
         private IProcessRunner processRunner;
         private readonly IKubernetes k8SClient;
         private readonly IConfigFileProvider configFileProvider;
+        private readonly IOSHandler osHandler;
 
-        public DeployController(DeploymentConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
+        public DeployController(DeploymentConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider, IOSHandler iOSHandler)
         {
             this.appConfig = appConfig;
             this.logger = logger;
             this.processRunner = processRunner;
             this.k8SClient = k8sClient;
             this.configFileProvider = configFileProvider;
+            this.osHandler = iOSHandler;
         }
 
         public Task Run()
@@ -66,7 +68,10 @@ namespace Threax.K8sDeploy.Controller
             MountAppSettings(volumes, volumeMounts);
             SetupSecrets(volumes, volumeMounts);
 
-            var deployment = CreateDeployment(appConfig.Name, latestDateTag, appConfig.User, appConfig.Group, volumes, volumeMounts);
+            var userId = appConfig.User != null ? long.Parse(appConfig.User) : default(long?);
+            var groupId = appConfig.Group != null ? long.Parse(appConfig.Group) : default(long?);
+
+            var deployment = CreateDeployment(appConfig.Name, latestDateTag, userId, groupId, volumes, volumeMounts);
             var service = CreateService(appConfig.Name);
             var ingress = CreateIngress(appConfig.Name, $"{appConfig.Name}.{appConfig.Domain}");
 
@@ -91,6 +96,11 @@ namespace Threax.K8sDeploy.Controller
                     {
                         Directory.CreateDirectory(path);
                     }
+
+                    if (vol.Value.ManagePermissions)
+                    {
+                        osHandler.SetPermissions(path, appConfig.User, appConfig.Group);
+                    }
                 }
 
                 volumes.AddRange(appConfig.Volumes?.Select(i => new V1Volume()
@@ -98,7 +108,7 @@ namespace Threax.K8sDeploy.Controller
                     Name = i.Key.ToLowerInvariant(),
                     HostPath = new V1HostPathVolumeSource()
                     {
-                        Path = CreateDockerWindowsPath(appConfig.GetAppDataPath(i.Value.Source)),
+                        Path = osHandler.CreateDockerPath(appConfig.GetAppDataPath(i.Value.Source)),
                         Type = i.Value.Type.ToString()
                     }
                 }));
@@ -204,11 +214,6 @@ namespace Threax.K8sDeploy.Controller
             }
         }
 
-        private static string CreateDockerWindowsPath(string windowsPath)
-        {
-            return "/" + windowsPath.Replace("\\", "/").Remove(1, 1);
-        }
-
         private V1ConfigMap CreateConfigMap(String name, Dictionary<String, String> data)
         {
             return new V1ConfigMap()
@@ -285,7 +290,6 @@ namespace Threax.K8sDeploy.Controller
 
         private V1Deployment CreateDeployment(String name, String image, long? user, long? group, IEnumerable<V1Volume> volumes, IEnumerable<V1VolumeMount> volumeMounts)
         {
-            //Try to build an object
             var deployment = new V1Deployment()
             {
                 ApiVersion = "apps/v1",
