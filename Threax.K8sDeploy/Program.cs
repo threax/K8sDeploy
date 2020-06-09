@@ -47,7 +47,7 @@ namespace Threax.K8sDeploy
                     {
                         var config = s.GetRequiredService<SchemaConfigurationBinder>();
                         var appConfig = new DeploymentConfig(jsonConfigPath);
-                        config.Bind("K8sDeploy", appConfig);
+                        config.Bind("Deploy", appConfig);
                         appConfig.Validate();
                         return appConfig;
                     });
