@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.1</Version>
+    <Version>1.0.0-pre01</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>The config objects for Threax.K8sDeploy. Makes it easy to include them in your app's configuration schema by including this project.</Description>
+    <Description>The config objects for Threax.K8sDeploy or other deployment tools. Makes it easy to include them in your app's configuration schema by including this library.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>

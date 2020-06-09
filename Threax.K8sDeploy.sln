@@ -5,12 +5,12 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Threax.K8sDeploy", "Threax.K8sDeploy\Threax.K8sDeploy.csproj", "{FA882551-1224-4640-AADB-BCFDFD2A14A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Threax.K8sDeploy.Config", "Threax.K8sDeploy.Config\Threax.K8sDeploy.Config.csproj", "{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E00C37AD-4EF1-4BAE-8AE6-4B985650BC3B}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Threax.DeployConfig", "Threax.DeployConfig\Threax.DeployConfig.csproj", "{91756E55-E4BD-4A21-95DF-6DAD7A7F1F34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +22,10 @@ Global
 		{FA882551-1224-4640-AADB-BCFDFD2A14A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA882551-1224-4640-AADB-BCFDFD2A14A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA882551-1224-4640-AADB-BCFDFD2A14A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A70E1DF-108D-40CD-8C8E-22090CE8E54D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91756E55-E4BD-4A21-95DF-6DAD7A7F1F34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91756E55-E4BD-4A21-95DF-6DAD7A7F1F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91756E55-E4BD-4A21-95DF-6DAD7A7F1F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91756E55-E4BD-4A21-95DF-6DAD7A7F1F34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

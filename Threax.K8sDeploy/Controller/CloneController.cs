@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Threax.K8sDeploy.Config;
+using Threax.DeployConfig;
 
 namespace Threax.K8sDeploy.Controller
 {
@@ -15,10 +15,10 @@ namespace Threax.K8sDeploy.Controller
         string localRefRoot = "refs/heads/";
         String remoteRefRoot = "refs/remotes/origin/";
 
-        private K8sDeployConfig appConfig;
+        private DeploymentConfig appConfig;
         private ILogger logger;
 
-        public CloneController(K8sDeployConfig appConfig, ILogger<CloneController> logger)
+        public CloneController(DeploymentConfig appConfig, ILogger<CloneController> logger)
         {
             this.appConfig = appConfig;
             this.logger = logger;

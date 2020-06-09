@@ -6,18 +6,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Threax.K8sDeploy.Config;
+using Threax.DeployConfig;
 using Threax.K8sDeploy.Services;
 
 namespace Threax.K8sDeploy.Controller
 {
     class BuildController : IController
     {
-        private K8sDeployConfig appConfig;
+        private DeploymentConfig appConfig;
         private ILogger logger;
         private IProcessRunner processRunner;
 
-        public BuildController(K8sDeployConfig appConfig, ILogger<BuildController> logger, IProcessRunner processRunner)
+        public BuildController(DeploymentConfig appConfig, ILogger<BuildController> logger, IProcessRunner processRunner)
         {
             this.appConfig = appConfig;
             this.logger = logger;

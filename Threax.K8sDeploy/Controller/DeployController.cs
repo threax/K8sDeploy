@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Threax.K8sDeploy.Config;
+using Threax.DeployConfig;
 using Threax.K8sDeploy.Services;
 
 namespace Threax.K8sDeploy.Controller
@@ -18,13 +18,13 @@ namespace Threax.K8sDeploy.Controller
     {
         private const String Namespace = "default";
 
-        private K8sDeployConfig appConfig;
+        private DeploymentConfig appConfig;
         private ILogger logger;
         private IProcessRunner processRunner;
         private readonly IKubernetes k8SClient;
         private readonly IConfigFileProvider configFileProvider;
 
-        public DeployController(K8sDeployConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
+        public DeployController(DeploymentConfig appConfig, ILogger<DeployController> logger, IProcessRunner processRunner, IKubernetes k8sClient, IConfigFileProvider configFileProvider)
         {
             this.appConfig = appConfig;
             this.logger = logger;

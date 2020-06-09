@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Threax.K8sDeploy.Config
+namespace Threax.DeployConfig
 {
     /// <summary>
     /// A volume definition.

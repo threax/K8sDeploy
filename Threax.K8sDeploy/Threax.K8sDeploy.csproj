@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Threax.K8sDeploy.Config\Threax.K8sDeploy.Config.csproj" />
+    <ProjectReference Include="..\Threax.DeployConfig\Threax.DeployConfig.csproj" />
   </ItemGroup>
 
   <ItemGroup>

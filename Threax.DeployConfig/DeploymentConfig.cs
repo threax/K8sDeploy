@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Threax.K8sDeploy.Config
+namespace Threax.DeployConfig
 {
     /// <summary>
     /// Configuration for k8s deployment.
     /// </summary>
-    public class K8sDeployConfig
+    public class DeploymentConfig
     {
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="sourceFile"></param>
-        public K8sDeployConfig(String sourceFile)
+        public DeploymentConfig(String sourceFile)
         {
             this.SourceFile = sourceFile;
             this.AppDataBasePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(this.SourceFile), "data"));

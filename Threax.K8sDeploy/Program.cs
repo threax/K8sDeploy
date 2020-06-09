@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Threax.Extensions.Configuration.SchemaBinder;
-using Threax.K8sDeploy.Config;
+using Threax.DeployConfig;
 using Threax.K8sDeploy.Controller;
 using Threax.K8sDeploy.Services;
 
@@ -43,10 +43,10 @@ namespace Threax.K8sDeploy
                         return client;
                     });
 
-                    services.AddScoped<K8sDeployConfig>(s =>
+                    services.AddScoped<DeploymentConfig>(s =>
                     {
                         var config = s.GetRequiredService<SchemaConfigurationBinder>();
-                        var appConfig = new K8sDeployConfig(jsonConfigPath);
+                        var appConfig = new DeploymentConfig(jsonConfigPath);
                         config.Bind("K8sDeploy", appConfig);
                         appConfig.Validate();
                         return appConfig;

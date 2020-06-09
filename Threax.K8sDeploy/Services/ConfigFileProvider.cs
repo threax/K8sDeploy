@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Threax.K8sDeploy.Config;
+using Threax.DeployConfig;
 
 namespace Threax.K8sDeploy.Services
 {
     class ConfigFileProvider : IConfigFileProvider
     {
-        private readonly K8sDeployConfig appConfig;
+        private readonly DeploymentConfig appConfig;
 
-        public ConfigFileProvider(K8sDeployConfig appConfig)
+        public ConfigFileProvider(DeploymentConfig appConfig)
         {
             this.appConfig = appConfig;
         }
