@@ -44,6 +44,7 @@ When done remove yourself from this group.
 ```
 sudo deluser $USER docker
 ```
+Be sure to reboot.
 
 To talk to microk8s run it in proxy mode:
 ```
