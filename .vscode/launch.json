@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Threax.K8sDeploy/bin/Debug/netcoreapp3.1/Threax.K8sDeploy.dll",
+            "args": ["clone", "Example/id/appsettings.json"],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "env":{
+                "LD_DEBUG": "all",
+                "LD_LIBRARY_PATH": "${workspaceFolder}/Threax.K8sDeploy/bin/Debug/netcoreapp3.1/runtimes/ubuntu.18.04-x64/native"
+            }
+        }
+
+    ]
+}
