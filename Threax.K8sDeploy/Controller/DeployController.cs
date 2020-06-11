@@ -79,7 +79,7 @@ namespace Threax.K8sDeploy.Controller
             k8SClient.CreateOrReplaceNamespacedService(service, Namespace);
             k8SClient.CreateOrReplaceNamespacedIngress1(ingress, Namespace);
 
-            FindPod(deployed);
+            //FindPod(deployed); //This is not working right when data is read back
 
             return Task.CompletedTask;
         }

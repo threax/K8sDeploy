@@ -24,8 +24,8 @@ namespace Threax.K8sDeploy.Services
             //sudo chmod 700 /data/app/id
 
             //Dunno if this will work
-            //this.processRunner.RunProcessWithOutput(new System.Diagnostics.ProcessStartInfo("chown", $"-R {user}:{group} ${path}"));
-            //this.processRunner.RunProcessWithOutput(new System.Diagnostics.ProcessStartInfo("chmod", $"700 ${path}"));
+            this.processRunner.RunProcessWithOutput(new System.Diagnostics.ProcessStartInfo("chown", $"-R {user}:{group} {path}"));
+            this.processRunner.RunProcessWithOutput(new System.Diagnostics.ProcessStartInfo("chmod", $"700 {path}"));
         }
     }
 }
