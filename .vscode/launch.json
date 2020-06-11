@@ -11,13 +11,16 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Threax.K8sDeploy/bin/Debug/netcoreapp3.1/Threax.K8sDeploy.dll",
             "args": ["clone", "Example/id/appsettings.json"],
+            //"args": ["build", "Example/id/appsettings.json"],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             "console": "internalConsole",
-            "env":{
-                "LD_DEBUG": "all",
-                "LD_LIBRARY_PATH": "${workspaceFolder}/Threax.K8sDeploy/bin/Debug/netcoreapp3.1/runtimes/ubuntu.18.04-x64/native"
-            }
+            "linux": {
+                "env":{
+                    //"LD_DEBUG": "all",
+                    "LD_LIBRARY_PATH": "${workspaceFolder}/Threax.K8sDeploy/bin/Debug/netcoreapp3.1/runtimes/ubuntu.18.04-x64/native"
+                }
+            },
         }
 
     ]
