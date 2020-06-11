@@ -1,13 +1,13 @@
 ﻿using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Threax.DeployConfig;
 using Threax.K8sDeploy.Services;
@@ -44,7 +44,7 @@ namespace Threax.K8sDeploy.Controller
             var args = $"inspect --format=\"{{{{json .RepoTags}}}}\" {image}:{currentTag}";
             var startInfo = new ProcessStartInfo("docker", args);
             var json = processRunner.RunProcessWithOutputGetOutput(startInfo);
-            var tags = JsonSerializer.Deserialize<List<String>>(json);
+            var tags = System.Text.Json.JsonSerializer.Deserialize<List<String>>(json);
 
             //Remove any tags that weren't set by this software
             tags.Remove($"{image}:{currentTag}");
@@ -79,7 +79,7 @@ namespace Threax.K8sDeploy.Controller
             k8SClient.CreateOrReplaceNamespacedService(service, Namespace);
             k8SClient.CreateOrReplaceNamespacedIngress1(ingress, Namespace);
 
-            //FindPod(deployed); //This is not working right when data is read back
+            FindPod(deployed);
 
             return Task.CompletedTask;
         }
@@ -207,7 +207,7 @@ namespace Threax.K8sDeploy.Controller
                 logger.LogInformation($"Writing pod info to '{podJsonPath}'.");
                 using (var streamWriter = new StreamWriter(File.Open(podJsonPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None)))
                 {
-                    var podJson = JsonSerializer.Serialize(latestPod);
+                    var podJson = JsonConvert.SerializeObject(latestPod);
                     streamWriter.Write(podJson);
                     streamWriter.Close();
                 }
